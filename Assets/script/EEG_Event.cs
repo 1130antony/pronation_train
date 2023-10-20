@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// 2023/10/20 test
+/// </summary>
+
 public class EEG_Event : MonoBehaviour
 {
     #region 計算實驗手的角度變數
