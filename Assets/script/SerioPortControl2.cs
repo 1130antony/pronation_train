@@ -36,11 +36,12 @@ public class SerioPortControl2 : MonoBehaviour
 
     #region 儲存資料
     string[] savedata = new string[20];
-    string path = "C:\\Users\\USER\\Desktop\\蔡俊安\\收案資料\\";
+    string path = "D:\\蔡俊安\\收案資料\\";
     string date = DateTime.Now.ToString("yyyy-MM-dd");
     int time = int.Parse(DateTime.Now.ToString("HH"));
     public string scenes;
     public water_controller wc;
+    int tick = 0;
     #endregion
 
     #region 遊戲物件資料
@@ -80,7 +81,7 @@ public class SerioPortControl2 : MonoBehaviour
         InitializeSerialPort();
         #endregion
 
-        
+
 
         #region 判斷上下午
         if (time < 12)
@@ -161,8 +162,12 @@ public class SerioPortControl2 : MonoBehaviour
                 for (int a = 0; a < 20; a++)
                     savedata[a] = rawdata[a].ToString();
 
-                if(wc.Isstart)//判斷實驗是否開始 開始後再進行資料儲存
+                if (wc.Isstart)//判斷實驗是否開始 開始後再進行資料儲存
+                {
+                    tick += 1;
                     SaveRawdata();
+                }
+                    
                 #endregion
 
             }
@@ -214,16 +219,23 @@ public class SerioPortControl2 : MonoBehaviour
             Directory.CreateDirectory(path);
             using (StreamWriter sw = File.CreateText(path + $"{scenes}.dat"))
             {
+                sw.Write($"{tick}:");
                 for (int a = 0; a < 20; a++)
                     sw.Write(savedata[a].ToString() + " ");
+                sw.Write("\n");
+
             }
         }
         else
         {
             using (StreamWriter sw = File.AppendText(path + $"{scenes}.dat"))
             {
+                sw.Write($"{tick}:");
                 for (int a = 0; a < 20; a++)
                     sw.Write(savedata[a].ToString() + " ");
+                sw.Write("\n");
+
+
             }
         }
     }

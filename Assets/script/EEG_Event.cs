@@ -14,6 +14,7 @@ public class EEG_Event : MonoBehaviour
     #region 計算實驗手的角度變數
     float outpitch = 0f;
     float innerpitch = 0f;
+    float tempf = 0f;
     #endregion  
 
     #region 取SerioPortControl2的資料
@@ -28,6 +29,24 @@ public class EEG_Event : MonoBehaviour
     bool isNewMessage;
     #endregion
 
+    #region 獲取物件變數
+    public UnitySimpleLiquid.LiquidContainer hand_cup;//手拿的杯子
+    public UnitySimpleLiquid.LiquidContainer bottle;//倒水的水瓶
+    public GameObject hand;
+    public GameObject left_hand;
+    public GameObject btn_start;
+    public GameObject btn_innermost;
+    public GameObject btn_outmost;
+    #endregion
+
+    #region 判斷實驗流程是否正確布林值
+    public bool Isstart = false;
+    bool outmostset = false;
+    bool innermostset = false;
+    int controller = 4;
+    float tempLF;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,11 +59,11 @@ public class EEG_Event : MonoBehaviour
                 arduinoStream.Open(); //開啟SerialPort連線
                 readThread = new Thread(new ThreadStart(ArduinoRead)); //實例化執行緒與指派呼叫函式
                 readThread.Start(); //開啟執行緒
-                Debug.Log("SerialPort開啟連接");
+                Debug.Log("EEG SerialPort開啟連接");
             }
             catch
             {
-                Debug.Log("SerialPort連接失敗");
+                Debug.Log("EEG SerialPort連接失敗");
             }
         }
         #endregion
@@ -53,8 +72,18 @@ public class EEG_Event : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (hand_cup.FillAmountPercent >= 0.9f && controller == 4)
+        {
+            tempf = left_hand.transform.localEulerAngles.z;
+            bottle.IsOpen = false;
+            controller = 1;
 
-        ArduinoWrite("g");
+
+
+            Debug.Log(controller);
+        }
+
+        //ArduinoWrite("g");
     }
 
     #region 腦波Event
@@ -99,10 +128,23 @@ public class EEG_Event : MonoBehaviour
     }
     #endregion
 
+    #region Btn_Start
+
+    public void Btn_Start_Click()
+    {
+
+        Isstart = true;
+        
+
+    }
+
+    #endregion
+
     #region Btn_outmost
     public void Btn_Outmost_Click()
     {
         outpitch = Mathf.Abs(sp2.pitch);
+        outmostset = true;
     }
     #endregion
 
@@ -110,6 +152,7 @@ public class EEG_Event : MonoBehaviour
     public void Btn_Innermost_Click()
     {
         innerpitch = sp2.pitch;
+        innermostset = true;
     }
     #endregion
 }

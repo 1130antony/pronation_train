@@ -56,6 +56,7 @@ public class water_controller : MonoBehaviour
 
     void Start()
     {
+        #region 物件初始化
         left_hand = GameObject.Find("group_0");
         hand = GameObject.Find("hand06");
         btn_start = GameObject.Find("Btn_Start");
@@ -63,23 +64,25 @@ public class water_controller : MonoBehaviour
         btn_outmost = GameObject.Find("Btn_OutMost");
         bottle.IsOpen = false;
         left_hand.transform.localEulerAngles = new Vector3(0f, -180f, 267.7f);
+        #endregion
 
-        
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        #region 實驗開始
         if (Isstart)
         {
-
+            HandCupControll();
             if (hand_cup.FillAmountPercent >= 0.9f && controller == 4)
             {
                 tempf = left_hand.transform.localEulerAngles.z;
                 bottle.IsOpen = false;
                 controller = 1;
-                
+
 
 
                 Debug.Log(controller);
@@ -92,7 +95,7 @@ public class water_controller : MonoBehaviour
             }
             else if (hand_cup.FillAmountPercent == 0 && controller == 2)
             {
-                
+
                 controller = 3;
                 Debug.Log(controller);
                 #region MyRegion
@@ -103,21 +106,21 @@ public class water_controller : MonoBehaviour
                 //    timer = 0f;
                 //}
                 #endregion
-                
+
             }
-            else if (controller == 3 && left_hand.transform.localEulerAngles.z <= tempf+50f && left_hand.transform.localEulerAngles.z >= 220f)
+            else if (controller == 3 && left_hand.transform.localEulerAngles.z <= tempf + 50f && left_hand.transform.localEulerAngles.z >= 220f)
             {
                 bottle.IsOpen = true;
                 controller = 4;
                 Debug.Log(controller);
             }
 
-            //Debug.Log("LF: "+ left_hand.transform.localEulerAngles.z);
-            //Debug.Log("tempLF: " + tempf);
-            //Debug.Log(controller);
-            HandCupControll();
+
+
 
         }
+        #endregion
+
 
         #region 舊的程式碼(已註解)
         //left_hand.transform.eulerAngles = new Vector3(0f, -180f, -sp2.pitch + 100f);
@@ -216,14 +219,14 @@ public class water_controller : MonoBehaviour
     }
     #endregion
 
-    #region 線性插值
+    #region 線性插值(以註解)
     //float Map(float value, float inMin, float inMax, float outMin, float outMax)
     //{
     //    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     //}
     #endregion
 
-    
+
 
 
 }
