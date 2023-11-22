@@ -5,14 +5,8 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-/// <summary>
-/// 2023/07/24
-/// 控制水龍頭開關的程式
-/// </summary>
-
-public class water_controller : MonoBehaviour
+public class nonmirror_water_controller : MonoBehaviour
 {
-
     #region 判斷實驗流程是否正確布林值
     public bool Isstart = false;
     bool outmostset = false;
@@ -225,8 +219,4 @@ public class water_controller : MonoBehaviour
     //    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     //}
     #endregion
-
-
-
-
 }
