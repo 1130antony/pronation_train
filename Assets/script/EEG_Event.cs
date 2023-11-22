@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+
 /// <summary>
 /// 2023/10/20 test
 /// </summary>
@@ -12,10 +13,16 @@ using UnityEngine;
 public class EEG_Event : MonoBehaviour
 {
     #region 計算實驗手的角度變數
+    float startpitch = 0f;
     float outpitch = 0f;
     float innerpitch = 0f;
     float tempf = 0f;
-    #endregion  
+    float nowpitch = 0f;
+    #endregion
+
+    #region 取water_controller的資料
+    public water_controller wc;
+    #endregion
 
     #region 取SerioPortControl2的資料
     public SerioPortControl2 sp2;
@@ -40,11 +47,17 @@ public class EEG_Event : MonoBehaviour
     #endregion
 
     #region 判斷實驗流程是否正確布林值
-    public bool Isstart = false;
+    bool Isstart = false;
     bool outmostset = false;
     bool innermostset = false;
     int controller = 4;
     float tempLF;
+    #endregion
+
+    #region 儲存tick
+    int full = 0;
+    int Pronation = 0;
+    int Supination = 0;
     #endregion
 
     // Start is called before the first frame update
@@ -72,18 +85,41 @@ public class EEG_Event : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hand_cup.FillAmountPercent >= 0.9f && controller == 4)
+        if (Isstart == true)
         {
-            tempf = left_hand.transform.localEulerAngles.z;
-            bottle.IsOpen = false;
-            controller = 1;
+            HandCupControll();
+            if (hand_cup.FillAmountPercent >= 0.9f && controller == 4)//水杯倒滿
+            {
+                ArduinoWrite("0");
+                full += 1;
+                sp2.Savetick($"full0_{full}");
+                Debug.Log("EEG OK1!!");
 
-
-
-            Debug.Log(controller);
+                controller = 1;
+            }
+            else if ((Mathf.Abs(nowpitch) <= 80f) && controller == 1)//代表開始旋前
+            {
+                ArduinoWrite("1");
+                Pronation += 1;
+                sp2.Savetick($"Pronation1_{Pronation}");
+                Debug.Log("EEG OK2!!");
+                controller = 2;
+            }
+            else if (Mathf.Abs(nowpitch)<=2 && Mathf.Abs(nowpitch)>=0 && controller == 2 )
+            {
+                Debug.Log("旋前完成!!!");
+                controller = 3;
+            }
+            else if ((Mathf.Abs(nowpitch) >= 5f) && controller == 3)//開始旋後
+            {
+                ArduinoWrite("2");
+                Supination += 1;
+                sp2.Savetick($"Supination2_{Supination}");
+                Debug.Log("EEG OK3!!");
+                controller = 4;
+            }
         }
-
-        //ArduinoWrite("g");
+        
     }
 
     #region 腦波Event
@@ -126,15 +162,40 @@ public class EEG_Event : MonoBehaviour
             Debug.LogWarning(e.Message);
         }
     }
+
+    void OnApplicationQuit()
+    {
+        if (arduinoStream != null)
+        {
+            if (arduinoStream.IsOpen)
+            {
+                arduinoStream.Close();
+            }
+        }
+    }
+    #endregion
+
+    #region 倒水事件控制
+    void HandCupControll()
+    {
+        nowpitch = sp2.pitch;
+    }
     #endregion
 
     #region Btn_Start
 
     public void Btn_Start_Click()
     {
+        if (outmostset && innermostset)
+        {
+            startpitch = Mathf.Abs(sp2.pitch);
+            Isstart = true;
+        }
+        else
+        {
+            Debug.Log("inner or out 未設定!!!");
+        }
 
-        Isstart = true;
-        
 
     }
 
@@ -155,4 +216,6 @@ public class EEG_Event : MonoBehaviour
         innermostset = true;
     }
     #endregion
+
+    
 }

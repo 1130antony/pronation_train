@@ -22,11 +22,11 @@ public class water_controller : MonoBehaviour
     #endregion
 
     #region 計算實驗手的角度變數
-    float startpitch = 0f;
-    float nowpitch = 0f;
-    float outpitch = 0f;
-    float innerpitch = 0f;
-    float tempf = 0f;
+    public float startpitch = 0f;
+    public float nowpitch = 0f;
+    public float outpitch = 0f;
+    public float innerpitch = 0f;
+    public float tempf = 0f;
     #endregion
 
     #region 獲取物件變數
@@ -171,7 +171,7 @@ public class water_controller : MonoBehaviour
 
         //nowpitch = Mathf.Abs(sp2.pitch);
         nowpitch = sp2.pitch;
-        left_hand.transform.rotation = Quaternion.Euler(0f, -180f, (nowpitch * 2.1f));
+        left_hand.transform.rotation = Quaternion.Euler(0f, -180f, (nowpitch * 2.0f));
         //left_hand.transform.localEulerAngles = new Vector3(0f, -180f, (((nowpitch/nowpitch)*267.7f) * 2.1f));
     }
     #endregion

@@ -41,7 +41,7 @@ public class SerioPortControl2 : MonoBehaviour
     int time = int.Parse(DateTime.Now.ToString("HH"));
     public string scenes;
     public water_controller wc;
-    int tick = 0;
+    public int tick = 0;
     #endregion
 
     #region 遊戲物件資料
@@ -239,6 +239,37 @@ public class SerioPortControl2 : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region 標記旋前旋後的tick
+    public void Savetick(string action)
+    {
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+            using (StreamWriter sw = File.CreateText(path + $"{scenes}-動作tick.dat"))
+            {
+                sw.Write($"{tick}: {action}");
+                //for (int a = 0; a < 20; a++)
+                //    sw.Write(savedata[a].ToString() + " ");
+                sw.Write("\n");
+
+            }
+        }
+        else
+        {
+            using (StreamWriter sw = File.AppendText(path + $"{scenes}-動作tick.dat"))
+            {
+                sw.Write($"{tick}: {action}");
+                //for (int a = 0; a < 20; a++)
+                //    sw.Write(savedata[a].ToString() + " ");
+                sw.Write("\n");
+
+
+            }
+        }
+    }
+
     #endregion
 
     #region 校正九軸資料方法
