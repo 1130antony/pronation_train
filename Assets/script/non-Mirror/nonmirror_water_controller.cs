@@ -40,7 +40,7 @@ public class nonmirror_water_controller : MonoBehaviour
     #endregion
 
     #region 取SerioPortControl2的資料
-    public SerioPortControl2 sp2;
+    public nonmirror_SerioPortControl2 sp2;
     #endregion
 
 
@@ -67,46 +67,37 @@ public class nonmirror_water_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        nowpitch = sp2.pitch;
         #region 實驗開始
         if (Isstart)
         {
-            HandCupControll();
+            //print("full:" + hand_cup.FillAmountPercent);
+            //print("pitch:" + (Mathf.Abs(nowpitch) * 0.01f));
+            //HandCupControll();
             if (hand_cup.FillAmountPercent >= 0.9f && controller == 4)
             {
-                tempf = left_hand.transform.localEulerAngles.z;
                 bottle.IsOpen = false;
+                hand_cup.FillAmountPercent = 0.89f;
                 controller = 1;
 
 
-
-                Debug.Log(controller);
+                
+                //Debug.Log(controller);
             }
             else if (hand_cup.FillAmountPercent <= 0.9f && hand_cup.FillAmountPercent > 0f && controller == 1)
             {
-                //HandCupControll();
-                controller = 2;
-                Debug.Log(controller);
+                HandCupControll();
+                if (hand_cup.FillAmountPercent <= 0.05f)
+                {
+                    hand_cup.FillAmountPercent = 0f;
+                    controller = 3;
+                }
             }
-            else if (hand_cup.FillAmountPercent == 0 && controller == 2)
-            {
-
-                controller = 3;
-                Debug.Log(controller);
-                #region MyRegion
-                //timer += Time.deltaTime;
-                //if (timer >= delayTime)
-                //{
-                //    bottle.IsOpen = true;
-                //    timer = 0f;
-                //}
-                #endregion
-
-            }
-            else if (controller == 3 && left_hand.transform.localEulerAngles.z <= tempf + 50f && left_hand.transform.localEulerAngles.z >= 220f)
+            else if (controller == 3 && Mathf.Abs(nowpitch) >=80f)
             {
                 bottle.IsOpen = true;
                 controller = 4;
-                Debug.Log(controller);
+                //Debug.Log(controller);
             }
 
 
@@ -162,10 +153,9 @@ public class nonmirror_water_controller : MonoBehaviour
     #region 倒水事件控制
     void HandCupControll()
     {
-
-        //nowpitch = Mathf.Abs(sp2.pitch);
-        nowpitch = sp2.pitch;
-        left_hand.transform.rotation = Quaternion.Euler(0f, -180f, (nowpitch * 2.0f));
+        //left_hand.transform.rotation = Quaternion.Euler(0f, -180f, (nowpitch * 2.0f));
+        hand_cup.FillAmountPercent = (Mathf.Abs(nowpitch)*0.01f) ;
+        //hand_cup.FillAmountPercent = nowpitch * 0.12f;
         //left_hand.transform.localEulerAngles = new Vector3(0f, -180f, (((nowpitch/nowpitch)*267.7f) * 2.1f));
     }
     #endregion

@@ -49,8 +49,6 @@ public class water_controller : MonoBehaviour
     public SerioPortControl2 sp2;
     #endregion
 
-
-
     //float mappedValue;
 
 
@@ -85,19 +83,19 @@ public class water_controller : MonoBehaviour
 
 
 
-                Debug.Log(controller);
+                //Debug.Log(controller);
             }
             else if (hand_cup.FillAmountPercent <= 0.9f && hand_cup.FillAmountPercent > 0f && controller == 1)
             {
                 //HandCupControll();
                 controller = 2;
-                Debug.Log(controller);
+                //Debug.Log(controller);
             }
-            else if (hand_cup.FillAmountPercent == 0 && controller == 2)
+            else if (hand_cup.FillAmountPercent == 0&& Mathf.Abs(nowpitch)<=10f && controller == 2)
             {
 
                 controller = 3;
-                Debug.Log(controller);
+                //Debug.Log(controller);
                 #region MyRegion
                 //timer += Time.deltaTime;
                 //if (timer >= delayTime)
@@ -108,11 +106,14 @@ public class water_controller : MonoBehaviour
                 #endregion
 
             }
-            else if (controller == 3 && left_hand.transform.localEulerAngles.z <= tempf + 50f && left_hand.transform.localEulerAngles.z >= 220f)
+            else if (controller == 3 && Mathf.Abs(nowpitch)>=80f)
+            #region 原本的判斷式(已註解)
+            //left_hand.transform.localEulerAngles.z <= tempf + 50f && left_hand.transform.localEulerAngles.z >= 250f left_hand.transform.localRotation.z <= 280f
+            #endregion
             {
                 bottle.IsOpen = true;
                 controller = 4;
-                Debug.Log(controller);
+                //Debug.Log(controller);
             }
 
 
