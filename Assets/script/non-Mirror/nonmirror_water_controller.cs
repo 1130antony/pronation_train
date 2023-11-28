@@ -26,11 +26,11 @@ public class nonmirror_water_controller : MonoBehaviour
     #region 獲取物件變數
     public UnitySimpleLiquid.LiquidContainer hand_cup;//手拿的杯子
     public UnitySimpleLiquid.LiquidContainer bottle;//倒水的水瓶
-    public GameObject hand;
-    public GameObject left_hand;
-    public GameObject btn_start;
-    public GameObject btn_innermost;
-    public GameObject btn_outmost;
+    private GameObject hand;
+    private GameObject left_hand;
+    private GameObject btn_start;
+    private GameObject btn_innermost;
+    private GameObject btn_outmost;
     #endregion
 
     #region 延遲時間
@@ -79,9 +79,6 @@ public class nonmirror_water_controller : MonoBehaviour
                 bottle.IsOpen = false;
                 hand_cup.FillAmountPercent = 0.89f;
                 controller = 1;
-
-
-                
                 //Debug.Log(controller);
             }
             else if (hand_cup.FillAmountPercent <= 0.9f && hand_cup.FillAmountPercent > 0f && controller == 1)

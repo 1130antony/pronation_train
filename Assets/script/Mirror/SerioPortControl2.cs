@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Start 判斷有無連線成功、判斷實驗上下午
@@ -52,17 +53,17 @@ public class SerioPortControl2 : MonoBehaviour
     #endregion
 
     #region QuaternionAlgorithm變數
-    public float[] q = new float[4];
-    public float[] qq = new float[4];
-    public float ax;
-    public float ay;
-    public float az;
-    public float gx;
-    public float gy;
-    public float gz;
-    public float mx;
-    public float my;
-    public float mz;
+    private float[] q = new float[4];
+    private float[] qq = new float[4];
+    private float ax;
+    private float ay;
+    private float az;
+    private float gx;
+    private float gy;
+    private float gz;
+    private float mx;
+    private float my;
+    private float mz;
 
     private float beta = Mathf.Sqrt(3.0f / 4.0f) * Mathf.PI * (40.0f / 180.0f) * 3f;
     private float zeta = Mathf.Sqrt(3.0f / 4.0f) * Mathf.PI * (2.0f / 180.0f);
@@ -71,6 +72,19 @@ public class SerioPortControl2 : MonoBehaviour
     private const float deltaT = 0.01f;
     public float yaw, pitch, roll;
     #endregion
+
+    #region 紀錄實驗時間
+    private float timer = 0;
+    public Text count_time;
+    #endregion
+
+    #region 判斷程式是否結束(倒水動作完成50次)
+
+    public EEG_Event eeg;
+
+    #endregion
+
+
 
     #endregion
 
@@ -104,16 +118,22 @@ public class SerioPortControl2 : MonoBehaviour
     #endregion
 
     #region Update
-    //private void Update()
-    //{
+    private void Update()
+    {
+        if (wc.Isstart)
+        {
+            timer += Time.deltaTime;
+            count_time.text = timer.ToString();
+        }
+        if (eeg.pour == 6)
+        {
+            Savetime();
+            Application.Quit();
+        }
 
 
 
-    //    testbbb();
-
-
-
-    //}
+    }
     #endregion
 
     #region fixupdate
@@ -167,7 +187,7 @@ public class SerioPortControl2 : MonoBehaviour
                     tick += 1;
                     SaveRawdata();
                 }
-                    
+
                 #endregion
 
             }
@@ -202,7 +222,7 @@ public class SerioPortControl2 : MonoBehaviour
     void InitializeSerialPort()
     {
         serialPort = new SerialPort(comPortName, 115200); // 替换为正确的波特率
-        serialPort.ReadTimeout = 1000; // 设置读取超时时间（根据需要调整）
+        serialPort.ReadTimeout = 5000; // 设置读取超时时间（根据需要调整）
         serialPort.Open();
         if (serialPort != null && serialPort.IsOpen && serialPort.BytesToRead != 0)
             Debug.Log("成功連接!!!");
@@ -241,7 +261,7 @@ public class SerioPortControl2 : MonoBehaviour
     }
     #endregion
 
-    #region 標記旋前旋後的tick
+    #region 儲存標記旋前旋後的tick
     public void Savetick(string action)
     {
         if (!Directory.Exists(path))
@@ -249,7 +269,7 @@ public class SerioPortControl2 : MonoBehaviour
             Directory.CreateDirectory(path);
             using (StreamWriter sw = File.CreateText(path + $"{scenes}-動作tick.dat"))
             {
-                sw.Write($"{tick}: {action}");
+                sw.Write($"{tick}: {action} - {timer}");
                 //for (int a = 0; a < 20; a++)
                 //    sw.Write(savedata[a].ToString() + " ");
                 sw.Write("\n");
@@ -260,7 +280,7 @@ public class SerioPortControl2 : MonoBehaviour
         {
             using (StreamWriter sw = File.AppendText(path + $"{scenes}-動作tick.dat"))
             {
-                sw.Write($"{tick}: {action}");
+                sw.Write($"{tick}: {action} - {timer}");
                 //for (int a = 0; a < 20; a++)
                 //    sw.Write(savedata[a].ToString() + " ");
                 sw.Write("\n");
@@ -270,6 +290,28 @@ public class SerioPortControl2 : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region 儲存時間
+    public void Savetime()
+    {
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+            using (StreamWriter sw = File.CreateText(path + $"{scenes}-時間紀錄.dat"))
+            {
+                sw.Write($"實驗總時長: {timer}秒");
+            }
+        }
+        else
+        {
+            using (StreamWriter sw = File.CreateText(path + $"{scenes}-時間紀錄.dat"))
+            {
+                sw.Write($"實驗總時長: {timer}秒");
+            }
+        }
+
+    }
     #endregion
 
     #region 校正九軸資料方法
@@ -488,30 +530,6 @@ public class SerioPortControl2 : MonoBehaviour
         roll *= 180.0f / Mathf.PI;
 
     }
-    #endregion
-
-    #region testbbb
-
-    //public void testbbb()
-    //{
-    //    try
-    //    {
-    //        float[] a = new float[4];
-    //        for (int i = 0; i < 4; i++)
-    //        {
-    //            a[i] = q[i];
-    //        }
-    //        //hand.transform.rotation = Quaternion.Euler(roll,pitch, yaw);//帶roll,yaw,pitch
-    //        //hand.transform.rotation = new Quaternion(-q[0], -q[2], q[3], q[1]);//帶四元數
-    //    }
-    //    catch
-    //    {
-    //        print("Object is Null...");
-    //    }
-
-    //    //Debug.Log("bbb");
-    //}
-
     #endregion
 
 

@@ -39,11 +39,11 @@ public class EEG_Event : MonoBehaviour
     #region 獲取物件變數
     public UnitySimpleLiquid.LiquidContainer hand_cup;//手拿的杯子
     public UnitySimpleLiquid.LiquidContainer bottle;//倒水的水瓶
-    public GameObject hand;
-    public GameObject left_hand;
-    public GameObject btn_start;
-    public GameObject btn_innermost;
-    public GameObject btn_outmost;
+    private GameObject hand;
+    private GameObject left_hand;
+    private GameObject btn_start;
+    private GameObject btn_innermost;
+    private GameObject btn_outmost;
     #endregion
 
     #region 判斷實驗流程是否正確布林值
@@ -55,10 +55,10 @@ public class EEG_Event : MonoBehaviour
     #endregion
 
     #region 儲存tick
-    int full = 0;
-    int Pronation = 0;
-    int Supination = 0;
-    int pour = 0;
+    public int full = 0;
+    public int Pronation = 0;
+    public int Supination = 0;
+    public int pour = 0;
     #endregion
 
     // Start is called before the first frame update
